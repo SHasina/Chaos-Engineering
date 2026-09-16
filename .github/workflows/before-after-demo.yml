@@ -11,6 +11,7 @@ on:
 jobs:
   before-and-after:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,7 +48,11 @@ jobs:
           helm repo update
           kubectl create namespace chaos-mesh
           helm install chaos-mesh chaos-mesh/chaos-mesh \
-            --namespace=chaos-mesh --set dashboard.create=false --wait --timeout 5m
+            --namespace=chaos-mesh \
+            --set dashboard.create=false \
+            --set chaosDaemon.runtime=containerd \
+            --set chaosDaemon.socketPath=/run/containerd/containerd.sock \
+            --wait --timeout 5m
 
       - name: Install validation dependencies
         run: pip install --user httpx
