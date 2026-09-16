@@ -113,7 +113,16 @@ three images, stands up an ephemeral kind cluster, deploys the chain,
 installs Chaos Mesh, generates background load with k6, and runs each of the
 three experiments in turn - failing the build if recovery exceeds the stated
 SLA. This is the resilience gate: a change that breaks recovery behavior
-does not merge silently.
+does not merge silently. With `RESILIENT_MODE=true` as the deployed default,
+this gate is expected to stay green.
+
+`.github/workflows/before-after-demo.yml` is a separate, `workflow_dispatch`-
+only workflow - not a gate, a demonstration. It runs the same network-
+partition experiment twice against the same deployment: once with
+`payment-api` in naive mode (that step is marked `continue-on-error` because
+it is expected to fail the stated SLA) and once in resilient mode (expected
+to pass). Run it from the Actions tab to see the naive failure and the
+resilient recovery side by side in one run's logs.
 
 ## SRE and resilience glossary
 
